@@ -1,0 +1,205 @@
+{
+  "info": {
+    "_postman_id": "c5c4bd43-5f80-4b1c-9b4e-7e7b7f0e9d09",
+    "name": "Diary App API",
+    "description": "Template pengujian REST API Diary App sesuai endpoint CRUD pada modul praktikum.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "diaryId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - API Aktif",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Health Database",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Database connected', function () {",
+              "    pm.expect(pm.response.json().database).to.eql('connected');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - GET Semua Diary",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/diaries"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response berupa array', function () {",
+              "    pm.expect(pm.response.json()).to.be.an('array');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - POST Tambah Diary",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Belajar CRUD dengan Postman\",\n  \"diary_date\": \"2026-11-24\",\n  \"body\": \"Hari ini saya menguji REST API Diary App menggunakan Postman.\",\n  \"mood\": \"\"\n}"
+        },
+        "url": "{{baseUrl}}/api/diaries"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const diary = pm.response.json();",
+              "if (diary.id) {",
+              "    pm.collectionVariables.set('diaryId', diary.id);",
+              "    console.log('diaryId disimpan:', diary.id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - GET Detail Diary",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/diaries/{{diaryId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('ID sesuai variable', function () {",
+              "    pm.expect(String(pm.response.json().id)).to.eql(String(pm.collectionVariables.get('diaryId')));",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - PUT Update Diary",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Belajar CRUD dan REST API\",\n  \"diary_date\": \"2026-11-24\",\n  \"body\": \"Diary ini sudah diperbarui melalui endpoint PUT.\",\n  \"mood\": \"\",\n  \"liked\": true\n}"
+        },
+        "url": "{{baseUrl}}/api/diaries/{{diaryId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Judul berhasil diperbarui', function () {",
+              "    pm.expect(pm.response.json().title).to.eql('Belajar CRUD dan REST API');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - DELETE Hapus Diary",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/diaries/{{diaryId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Pesan penghapusan benar', function () {",
+              "    pm.expect(pm.response.json().message).to.eql('Diary berhasil dihapus');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/api/diaries/{{diaryId}}"
+method: DELETE
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test('Pesan penghapusan benar', function () {
+          pm.expect(pm.response.json().message).to.eql('Diary berhasil dihapus');
+      });
+    language: text/javascript
+order: 7000

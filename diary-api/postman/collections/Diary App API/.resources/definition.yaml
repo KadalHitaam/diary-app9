@@ -1,0 +1,5 @@
+$kind: collection
+description: Template pengujian REST API Diary App sesuai endpoint CRUD pada modul praktikum.
+variables:
+  baseUrl: http://localhost:3000
+  diaryId: "1"

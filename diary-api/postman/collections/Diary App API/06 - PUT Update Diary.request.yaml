@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{baseUrl}}/api/diaries/{{diaryId}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "title": "Belajar CRUD dan REST API",
+      "diary_date": "2026-11-24",
+      "body": "Diary ini sudah diperbarui melalui endpoint PUT.",
+      "mood": "",
+      "liked": true
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test('Judul berhasil diperbarui', function () {
+          pm.expect(pm.response.json().title).to.eql('Belajar CRUD dan REST API');
+      });
+    language: text/javascript
+order: 6000

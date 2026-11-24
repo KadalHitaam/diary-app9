@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{baseUrl}}/api/diaries"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "title": "Belajar CRUD dengan Postman",
+      "diary_date": "2026-11-24",
+      "body": "Hari ini saya menguji REST API Diary App menggunakan Postman.",
+      "mood": ""
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', function () {
+          pm.response.to.have.status(201);
+      });
+      const diary = pm.response.json();
+      if (diary.id) {
+          pm.collectionVariables.set('diaryId', diary.id);
+          console.log('diaryId disimpan:', diary.id);
+      }
+    language: text/javascript
+order: 4000
